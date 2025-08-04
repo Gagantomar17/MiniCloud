@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniCloud - File Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MiniCloud</h1>
+            <p>Simple File Management System</p>
+        </header>
+
+        <!-- Authentication Section -->
+        <div id="auth-section">
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="showTab('login')">Login</button>
+                <button class="tab-btn" onclick="showTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-tab" class="auth-tab active">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email:</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password:</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-tab" class="auth-tab">
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-email">Email:</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password:</label>
+                        <input type="password" id="register-password" required>
+                        <small>Minimum 8 characters with uppercase, lowercase, and number</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- File Management Section (Hidden until logged in) -->
+        <div id="file-section" style="display: none;">
+            <div class="user-info">
+                <span id="user-email"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+
+            <!-- File Upload -->
+            <div class="upload-section">
+                <h3>Upload File</h3>
+                <form id="upload-form">
+                    <div class="form-group">
+                        <label for="file-input">Select File:</label>
+                        <input type="file" id="file-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="file-title">Title:</label>
+                        <input type="text" id="file-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="file-desc">Description:</label>
+                        <textarea id="file-desc" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload File</button>
+                </form>
+            </div>
+
+            <!-- File List -->
+            <div class="files-section">
+                <h3>Your Files</h3>
+                <div id="files-list">
+                    <p>Loading files...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="messages"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
