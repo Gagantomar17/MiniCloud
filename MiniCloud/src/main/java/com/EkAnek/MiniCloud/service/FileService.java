@@ -69,4 +69,18 @@ public class FileService {
         fileRepo.save(file);
         return file;
     }
+
+    public FileRecord getFileById(Long id, User user) {
+        var file = fileRepo.findById(id).orElseThrow();
+        if (!file.getUser().getId().equals(user.getId())) throw new AccessDeniedException("Denied");
+        return file;
+    }
+
+    public FileRecord revokeShare(Long id, User user) {
+        var file = fileRepo.findById(id).orElseThrow();
+        if (!file.getUser().getId().equals(user.getId())) throw new AccessDeniedException("Denied");
+        file.setTinyUrl(null);
+        fileRepo.save(file);
+        return file;
+    }
 }

@@ -250,6 +250,10 @@ function displayFiles(files) {
         const fileSize = formatFileSize(file.fileSize);
         const uploadDate = new Date(file.uploadedAt).toLocaleDateString();
         
+        // Check if file has a public URL
+        const hasPublicUrl = file.tinyUrl;
+        const publicUrl = hasPublicUrl ? `${window.location.origin}${API_BASE}/public/${file.tinyUrl}` : null;
+        
         filesHtml += `
             <div class="file-item">
                 <div class="file-info">
@@ -258,8 +262,16 @@ function displayFiles(files) {
                     <div class="file-meta">
                         Size: ${fileSize} | Uploaded: ${uploadDate}
                     </div>
+                    ${hasPublicUrl ? `
+                        <div class="public-url">
+                            <strong>Public URL:</strong> 
+                            <a href="${publicUrl}" target="_blank">${publicUrl}</a>
+                            <button class="btn btn-small btn-secondary" onclick="copyToClipboard('${publicUrl}')">Copy</button>
+                        </div>
+                    ` : ''}
                 </div>
                 <div class="file-actions">
+                    ${!hasPublicUrl ? `<button class="btn btn-primary" onclick="shareFile(${file.id})">Share</button>` : `<button class="btn btn-warning" onclick="revokeShare(${file.id})">Revoke Share</button>`}
                     <button class="btn btn-danger" onclick="deleteFile(${file.id})">Delete</button>
                 </div>
             </div>
@@ -286,6 +298,56 @@ function deleteFile(fileId) {
         },
         error: function(xhr) {
             const error = xhr.responseJSON?.error || 'Delete failed';
+            showMessage(error, 'error');
+        }
+    });
+}
+
+function shareFile(fileId) {
+    $.ajax({
+        url: `${API_BASE}/files/${fileId}/share`,
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${authToken}`
+        },
+        success: function(response) {
+            const publicUrl = `${window.location.origin}${response}`;
+            showMessage('File shared successfully! Public URL generated.', 'success');
+            loadFiles(); // Reload to show the new public URL
+        },
+        error: function(xhr) {
+            const error = xhr.responseJSON?.error || 'Share failed';
+            showMessage(error, 'error');
+        }
+    });
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        showMessage('URL copied to clipboard!', 'success');
+    }).catch(function(err) {
+        showMessage('Failed to copy URL', 'error');
+        console.error('Could not copy text: ', err);
+    });
+}
+
+function revokeShare(fileId) {
+    if (!confirm('Are you sure you want to revoke sharing for this file? This will make the public URL invalid.')) {
+        return;
+    }
+
+    $.ajax({
+        url: `${API_BASE}/files/${fileId}/share`,
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${authToken}`
+        },
+        success: function() {
+            showMessage('File sharing revoked successfully!', 'success');
+            loadFiles(); // Reload to update the UI
+        },
+        error: function(xhr) {
+            const error = xhr.responseJSON?.error || 'Revoke failed';
             showMessage(error, 'error');
         }
     });

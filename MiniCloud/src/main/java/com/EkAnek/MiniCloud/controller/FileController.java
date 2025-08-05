@@ -60,9 +60,35 @@ public class FileController {
         try {
             var user = userRepo.findByEmail(principal.getName()).orElseThrow();
             FileRecord fr = fileService.shareFile(id, user);
-            return ResponseEntity.ok("/public/" + fr.getTinyUrl());
+            return ResponseEntity.ok(fr);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Share failed: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/public-url")
+    public ResponseEntity<?> getPublicUrl(@PathVariable Long id, Principal principal) {
+        try {
+            var user = userRepo.findByEmail(principal.getName()).orElseThrow();
+            FileRecord fr = fileService.getFileById(id, user);
+            if (fr.getTinyUrl() != null) {
+                return ResponseEntity.ok(fr);
+            } else {
+                return ResponseEntity.ok("File not shared yet");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to get public URL: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}/share")
+    public ResponseEntity<?> revokeShare(@PathVariable Long id, Principal principal) {
+        try {
+            var user = userRepo.findByEmail(principal.getName()).orElseThrow();
+            FileRecord fr = fileService.revokeShare(id, user);
+            return ResponseEntity.ok("File sharing revoked successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Revoke failed: " + e.getMessage());
         }
     }
 }
