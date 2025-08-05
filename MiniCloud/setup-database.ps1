@@ -37,84 +37,41 @@ if ([string]::IsNullOrEmpty($mysqlUser)) {
 $mysqlPassword = Read-Host "Enter MySQL password" -AsSecureString
 $mysqlPasswordPlain = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($mysqlPassword))
 
-# Create development database
-Write-Host "Creating development database..." -ForegroundColor Yellow
-$devDbCommand = "CREATE DATABASE IF NOT EXISTS minicloud_dev;"
+# Create database
+Write-Host "Creating database..." -ForegroundColor Yellow
+$dbCommand = "CREATE DATABASE IF NOT EXISTS minicloud;"
 if ([string]::IsNullOrEmpty($mysqlPasswordPlain)) {
-    mysql -u $mysqlUser -e $devDbCommand
+    mysql -u $mysqlUser -e $dbCommand
 } else {
-    mysql -u $mysqlUser -p$mysqlPasswordPlain -e $devDbCommand
+    mysql -u $mysqlUser -p$mysqlPasswordPlain -e $dbCommand
 }
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Failed to create development database" -ForegroundColor Red
+    Write-Host "ERROR: Failed to create database" -ForegroundColor Red
     Write-Host "Please check your MySQL credentials" -ForegroundColor Red
     Read-Host "Press Enter to exit"
     exit 1
 }
 
-# Create production database
-Write-Host "Creating production database..." -ForegroundColor Yellow
-$prodDbCommand = "CREATE DATABASE IF NOT EXISTS minicloud;"
-if ([string]::IsNullOrEmpty($mysqlPasswordPlain)) {
-    mysql -u $mysqlUser -e $prodDbCommand
-} else {
-    mysql -u $mysqlUser -p$mysqlPasswordPlain -e $prodDbCommand
-}
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Failed to create production database" -ForegroundColor Red
-    Write-Host "Please check your MySQL credentials" -ForegroundColor Red
-    Read-Host "Press Enter to exit"
-    exit 1
-}
 
 Write-Host ""
 Write-Host "Databases created successfully!" -ForegroundColor Green
 Write-Host ""
 
-# Ask user which schema to use
-Write-Host "Choose database schema:" -ForegroundColor Yellow
-Write-Host "1. Simple schema (recommended for development)" -ForegroundColor White
-Write-Host "2. Production schema (advanced features)" -ForegroundColor White
-Write-Host ""
-$choice = Read-Host "Enter your choice (1 or 2)"
-
-if ($choice -eq "1") {
-    Write-Host ""
-    Write-Host "Setting up simple schema..." -ForegroundColor Yellow
-    if ([string]::IsNullOrEmpty($mysqlPasswordPlain)) {
-        mysql -u $mysqlUser minicloud_dev < database\minicloud_simple.sql
-    } else {
-        mysql -u $mysqlUser -p$mysqlPasswordPlain minicloud_dev < database\minicloud_simple.sql
-    }
-    
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "ERROR: Failed to set up simple schema" -ForegroundColor Red
-        Read-Host "Press Enter to exit"
-        exit 1
-    }
-    Write-Host "Simple schema set up successfully!" -ForegroundColor Green
-} elseif ($choice -eq "2") {
-    Write-Host ""
-    Write-Host "Setting up production schema..." -ForegroundColor Yellow
-    if ([string]::IsNullOrEmpty($mysqlPasswordPlain)) {
-        mysql -u $mysqlUser minicloud < database\minicloud_production.sql
-    } else {
-        mysql -u $mysqlUser -p$mysqlPasswordPlain minicloud < database\minicloud_production.sql
-    }
-    
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "ERROR: Failed to set up production schema" -ForegroundColor Red
-        Read-Host "Press Enter to exit"
-        exit 1
-    }
-    Write-Host "Production schema set up successfully!" -ForegroundColor Green
+Write-Host "Setting up schema..." -ForegroundColor Yellow
+if ([string]::IsNullOrEmpty($mysqlPasswordPlain)) {
+    mysql -u $mysqlUser minicloud < database\minicloud.sql
 } else {
-    Write-Host "Invalid choice. Please run the script again." -ForegroundColor Red
+    mysql -u $mysqlUser -p$mysqlPasswordPlain minicloud < database\minicloud.sql
+}
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERROR: Failed to set up schema" -ForegroundColor Red
     Read-Host "Press Enter to exit"
     exit 1
 }
+Write-Host "Schema set up successfully!" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "=====================================================" -ForegroundColor Green

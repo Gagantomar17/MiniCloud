@@ -125,7 +125,7 @@ GET /api/v1/auth/health
 ## Setup Instructions
 
 ### Prerequisites
-- Java 21
+- Java 22
 - MySQL 8.0+
 - Gradle 8.0+
 
@@ -140,13 +140,20 @@ GET /api/v1/auth/health
 git clone <repository-url>
 cd MiniCloud
 ```
+2. **Update MySQL password and username in application.properties**
+#(Edit the file manually)
 
-2. **Build the project**
+3. **Set up database**
+```bash
+./setup-database.bat
+```
+
+4. **Build the project**
 ```bash
 ./gradlew build
 ```
 
-3. **Run the application**
+5. **Run the application**
 ```bash
 ./gradlew bootRun
 ```

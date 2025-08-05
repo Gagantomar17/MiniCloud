@@ -19,62 +19,30 @@ if %errorlevel% neq 0 (
 echo MySQL is installed. Proceeding with database setup...
 echo.
 
-REM Create development database
-echo Creating development database...
-mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS minicloud_dev;"
+REM Create database
+echo Creating database...
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS minicloud;"
 if %errorlevel% neq 0 (
-    echo ERROR: Failed to create development database
+    echo ERROR: Failed to create database
     echo Please check your MySQL credentials
     pause
     exit /b 1
 )
 
-REM Create production database
-echo Creating production database...
-mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS minicloud;"
-if %errorlevel% neq 0 (
-    echo ERROR: Failed to create production database
-    echo Please check your MySQL credentials
-    pause
-    exit /b 1
-)
+
 
 echo.
 echo Databases created successfully!
 echo.
 
-REM Ask user which schema to use
-echo Choose database schema:
-echo 1. Simple schema (recommended for development)
-echo 2. Production schema (advanced features)
-echo.
-set /p choice="Enter your choice (1 or 2): "
-
-if "%choice%"=="1" (
-    echo.
-    echo Setting up simple schema...
-    mysql -u root -p minicloud_dev < database\minicloud_simple.sql
-    if %errorlevel% neq 0 (
-        echo ERROR: Failed to set up simple schema
-        pause
-        exit /b 1
-    )
-    echo Simple schema set up successfully!
-) else if "%choice%"=="2" (
-    echo.
-    echo Setting up production schema...
-    mysql -u root -p minicloud < database\minicloud_production.sql
-    if %errorlevel% neq 0 (
-        echo ERROR: Failed to set up production schema
-        pause
-        exit /b 1
-    )
-    echo Production schema set up successfully!
-) else (
-    echo Invalid choice. Please run the script again.
+echo Setting up schema...
+mysql -u root -p minicloud < database\minicloud.sql
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to set up schema
     pause
     exit /b 1
 )
+echo Schema set up successfully!
 
 echo.
 echo =====================================================

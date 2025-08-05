@@ -4,10 +4,7 @@ This directory contains the database schema and configuration files for the Mini
 
 ## Files Overview
 
-- `minicloud_production.sql` - Complete production-ready database schema with advanced features
-- `minicloud_simple.sql` - Simple schema matching the current entity structure
-- `application-prod.properties` - Production database configuration
-- `application-dev.properties` - Development database configuration
+- `minicloud.sql` - Database schema matching the current entity structure
 - `README.md` - This file
 
 ## Quick Setup
@@ -20,23 +17,12 @@ Make sure you have MySQL or MariaDB installed on your system.
 
 ```sql
 CREATE DATABASE minicloud;
--- or for development
-CREATE DATABASE minicloud_dev;
 ```
 
 ### 3. Run Schema
 
-Choose one of the following:
-
-**For Simple Setup (Recommended for current application):**
 ```bash
-mysql -u root -p minicloud < minicloud_simple.sql
-```
-
-**For Production Setup (Advanced features):**
-```bash
-mysql -u root -p minicloud < minicloud_production.sql
-```
+mysql -u root -p minicloud < minicloud.sql
 
 ### 4. Create Database User (Production)
 
@@ -54,54 +40,23 @@ FLUSH PRIVILEGES;
 
 ### 5. Configure Application
 
-Copy the appropriate configuration file to your application:
+Update the main application.properties file with your database credentials:
 
-**For Development:**
 ```bash
-cp application-dev.properties ../src/main/resources/application-dev.properties
-```
-
-**For Production:**
-```bash
-cp application-prod.properties ../src/main/resources/application-prod.properties
+# Edit src/main/resources/application.properties
+# Update the password field with your MySQL password
 ```
 
 ## Schema Details
 
-### Simple Schema (`minicloud_simple.sql`)
+### Database Schema (`minicloud.sql`)
 
 Contains only the essential tables matching your current entities:
 
 - `users` - User accounts
 - `file_record` - File metadata
 
-### Production Schema (`minicloud_production.sql`)
 
-Includes additional features for production use:
-
-- **Core Tables**: `users`, `file_records`
-- **Audit Tables**: `audit_logs`, `session_tokens`
-- **Advanced Features**: `file_shares`, `storage_quotas`
-- **Views**: `user_file_summary`, `file_storage_usage`
-- **Stored Procedures**: Storage quota management, cleanup procedures
-- **Triggers**: Automatic audit logging, storage quota creation
-
-## Configuration Files
-
-### Development Configuration (`application-dev.properties`)
-
-- Uses `create-drop` for easy testing
-- Shows SQL queries for debugging
-- Local file system for uploads
-- Debug logging enabled
-
-### Production Configuration (`application-prod.properties`)
-
-- Uses `validate` for schema validation
-- Optimized connection pooling
-- Secure file upload directory
-- Production logging levels
-- SSL/TLS enabled
 
 ## Security Considerations
 
@@ -138,24 +93,9 @@ spring.datasource.url=${DB_URL}
 
 ### Regular Maintenance Tasks
 
-1. **Clean up expired sessions** (if using production schema):
+1. **Monitor storage usage**:
    ```sql
-   CALL CleanupExpiredSessions();
-   ```
-
-2. **Clean up expired file shares** (if using production schema):
-   ```sql
-   CALL CleanupExpiredShares();
-   ```
-
-3. **Monitor storage usage**:
-   ```sql
-   SELECT * FROM file_storage_usage WHERE usage_percentage > 80;
-   ```
-
-4. **Archive old audit logs** (if using production schema):
-   ```sql
-   DELETE FROM audit_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 1 YEAR);
+   SELECT COUNT(*) as file_count FROM file_record;
    ```
 
 ### Backup Strategy
@@ -202,5 +142,5 @@ For database-related issues:
 ## Version History
 
 - **v1.0** - Initial schema with basic tables
-- **v1.1** - Added production schema with advanced features
+- **v1.1** - Simplified to use only simple schema
 - **v1.2** - Added configuration files and documentation 
