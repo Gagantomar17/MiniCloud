@@ -166,7 +166,7 @@ Key configuration properties in `application.properties`:
 
 ```properties
 # Database
-spring.datasource.url=jdbc:mysql://localhost:3306/ekanek
+spring.datasource.url=jdbc:mysql://localhost:3306/minicloud
 spring.datasource.username=root
 spring.datasource.password=your_password
 
