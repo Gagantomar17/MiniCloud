@@ -13,7 +13,7 @@ A Spring Boot application providing JWT-based authentication and file management
 
 ## Tech Stack
 
-- **Backend**: Spring Boot 3.5.4, Java 21
+- **Backend**: Spring Boot 3.5.4, Java 22
 - **Security**: Spring Security, JWT
 - **Database**: MySQL
 - **Build Tool**: Gradle
@@ -130,7 +130,7 @@ GET /api/v1/auth/health
 - Gradle 8.0+
 
 ### Database Setup
-1. Create a MySQL database named `ekanek`
+1. Create a MySQL database named `minicloud`
 2. Update database credentials in `application.properties`
 
 ### Running the Application
@@ -248,15 +248,3 @@ src/main/java/com/EkAnek/MiniCloud/
 │   └── UserRepository.java
 └── MiniCloudApplication.java
 ```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-
-This project is licensed under the MIT License. 
